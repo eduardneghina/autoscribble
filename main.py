@@ -1,14 +1,9 @@
 import os
 import time
-from WebController import *
-from DataController import *
+from WebController import WebController
+from DataController import DataController
 
 def main():
-
-    WebControllerObject = WebController()
-    print(WebControllerObject.initiate_the_browser())
-    print("00000000000000000000")
-    print(WebControllerObject.initiate_the_game())
 
 
 if __name__ == "__main__":

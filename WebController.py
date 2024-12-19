@@ -8,6 +8,8 @@ import tkinter as tk
 import logging
 from random_words import RandomWords
 from selenium import webdriver
+from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -18,7 +20,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from DataController import *
 
-logging.basicConfig(level=logging.INFO)
 
 ########################################################################################################################
 
@@ -26,9 +27,41 @@ class WebController:
     """Class to control web interactions using Selenium."""
 
     def __init__(self):
+
+        """Initialize the WebController class."""
+
         self.db_path_directory = "C:\\Temp\\skribbl"
-        self.db_path_file = "C:\\Temp\\skribbl\\data.txt"
-        self.last_value = None
+        # Ensure the directory exists
+        os.makedirs(self.db_path_directory, exist_ok=True)
+
+        self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
+        # Ensure the data file is created
+        with open(self.data_path_file, 'w') as f:
+            pass
+
+        self.info_path_file = "C:\\Temp\\skribbl\\logs.txt"
+        # Ensure the log file is created
+        with open(self.info_path_file, 'w') as f:
+            f.write("\n" + "=" * 50 + " New Session " + "=" * 50 + "\n")
+            pass
+
+        # Configure logging to file
+        file_handler = logging.FileHandler(self.info_path_file, mode='a')
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+
+        # Add console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+
+        # Get the root logger and set its level
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
+
+
 
     def initiate_the_browser(self):
         """Initiate the browser with Brave or Chrome."""
@@ -59,6 +92,7 @@ class WebController:
         except Exception:
             logging.warning("Consent cookie button not found - pass")
         finally:
+            time.sleep(1)
             self.insert_name()
             time.sleep(1)
             self.press_click_on_play()

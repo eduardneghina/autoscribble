@@ -136,4 +136,10 @@ class WebController:
 
     def enter_a_word(self):
         """Enter a word in the game."""
- #JESUS I JUST CANT OMG
+        try:
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            element = self.driver.find_element(By.XPATH, '//*[@id="game-chat"]/form/input')
+            element.send_keys(RandomWords().random_word())
+            element.send_keys(Keys.RETURN)
+        except ElementNotInteractableException:
+            logging.error("Element not interactable")

@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import time
 import json
 import random
@@ -8,18 +9,16 @@ import tkinter as tk
 import logging
 from random_words import RandomWords
 from selenium import webdriver
-from selenium import webdriver
-from selenium.webdriver import ActionChains
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from DataController import *
-
 
 ########################################################################################################################
 
@@ -46,12 +45,12 @@ class WebController:
             pass
 
         # Configure logging to file
-        file_handler = logging.FileHandler(self.info_path_file, mode='a')
+        file_handler = logging.FileHandler(self.info_path_file, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
         # Add console handler
-        console_handler = logging.StreamHandler()
+        console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
@@ -61,7 +60,10 @@ class WebController:
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
 
+        # Set the console encoding to utf-8 to avoid encoding issues for romanian characters
+        sys.stdout.reconfigure(encoding='utf-8')
 
+#########################################################################################################################
 
     def initiate_the_browser(self):
         """Initiate the browser with Brave or Chrome."""
@@ -123,6 +125,15 @@ class WebController:
 
     def get_the_word(self):
         """Retrieve the current game word."""
-        element = self.driver.find_element(By.ID, 'game-word')
-        logging.info(f"The word is: {element.text}")
-        return element.text
+        try:
+            element = self.driver.find_element(By.ID, 'game-word')
+            self.driver.execute_script("arguments[0].scrollIntoView();", element)
+            logging.info(f"The word is: {element.text}")
+            return element.text
+        except ElementNotInteractableException:
+            logging.error("Element not interactable")
+            return None
+
+    def enter_a_word(self):
+        """Enter a word in the game."""
+ #JESUS I JUST CANT OMG

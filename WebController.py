@@ -26,41 +26,31 @@ class WebController:
     """Class to control web interactions using Selenium."""
 
     def __init__(self):
-
         """Initialize the WebController class."""
-
         self.db_path_directory = "C:\\Temp\\skribbl"
-        # Ensure the directory exists
         os.makedirs(self.db_path_directory, exist_ok=True)
 
         self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
-        # Ensure the data file is created
         with open(self.data_path_file, 'w') as f:
             pass
 
         self.info_path_file = "C:\\Temp\\skribbl\\logs.txt"
-        # Ensure the log file is created
         with open(self.info_path_file, 'w') as f:
             f.write("\n" + "=" * 50 + " New Session " + "=" * 50 + "\n")
-            pass
 
-        # Configure logging to file
         file_handler = logging.FileHandler(self.info_path_file, mode='a', encoding='utf-8')
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
-        # Add console handler
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
-        # Get the root logger and set its level
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
 
-        # Set the console encoding to utf-8 to avoid encoding issues for romanian characters
         sys.stdout.reconfigure(encoding='utf-8')
 
 #########################################################################################################################
@@ -84,44 +74,61 @@ class WebController:
             else:
                 logging.info("Chrome is active")
                 self.driver.maximize_window()
+        except Exception as e:
+            logging.error(f"Failed to initiate the browser: {e}")
 
     def initiate_the_game(self):
         """Initiate the game by navigating to the provided link."""
-        self.driver.get(self.get_input())
-        logging.info("Browsing to the link with success")
         try:
-            self.driver.find_element(By.CLASS_NAME, 'fc-primary-button').click()
-        except Exception:
-            logging.warning("Consent cookie button not found - pass")
-        finally:
-            time.sleep(1)
-            self.insert_name()
-            time.sleep(1)
-            self.press_click_on_play()
-            logging.info("The game is initiated")
-            return True
+            self.driver.get(self.get_input())
+            logging.info("Browsing to the link with success")
+            try:
+                self.driver.find_element(By.CLASS_NAME, 'fc-primary-button').click()
+            except Exception:
+                logging.warning("Consent cookie button not found - pass")
+            finally:
+                time.sleep(1)
+                self.insert_name()
+                time.sleep(1)
+                self.press_click_on_play()
+                logging.info("The game is initiated")
+                return True
+        except Exception as e:
+            logging.error(f"Failed to initiate the game: {e}")
 
     def get_input(self):
         """Get the game link from user input."""
-        link_inserted = input("Enter a link: ")
-        return link_inserted
+        try:
+            link_inserted = input("Enter a link: ")
+            return link_inserted
+        except Exception as e:
+            logging.error(f"Failed to get input: {e}")
 
     def get_name(self):
         """Get the player name from user input."""
-        inserted_name = input("Enter a name: ")
-        logging.info(f"{inserted_name} name inserted")
-        return inserted_name
+        try:
+            inserted_name = input("Enter a name: ")
+            logging.info(f"{inserted_name} name inserted")
+            return inserted_name
+        except Exception as e:
+            logging.error(f"Failed to get name: {e}")
 
     def insert_name(self):
         """Insert the player name into the game."""
-        name = self.get_name()
-        self.driver.find_element(By.CLASS_NAME, 'input-name').send_keys(str(name))
+        try:
+            name = self.get_name()
+            self.driver.find_element(By.CLASS_NAME, 'input-name').send_keys(str(name))
+        except Exception as e:
+            logging.error(f"Failed to insert name: {e}")
 
     def press_click_on_play(self):
         """Press the play button to start the game."""
-        element = self.driver.find_element(By.CLASS_NAME, 'button-play')
-        actions = ActionChains(self.driver)
-        actions.move_to_element(element).click().perform()
+        try:
+            element = self.driver.find_element(By.CLASS_NAME, 'button-play')
+            actions = ActionChains(self.driver)
+            actions.move_to_element(element).click().perform()
+        except Exception as e:
+            logging.error(f"Failed to press click on play: {e}")
 
     def get_the_word(self):
         """Retrieve the current game word."""
@@ -133,6 +140,8 @@ class WebController:
         except ElementNotInteractableException:
             logging.error("Element not interactable")
             return None
+        except Exception as e:
+            logging.error(f"Failed to get the word: {e}")
 
     def enter_a_word(self):
         """Enter a word in the game."""
@@ -143,3 +152,5 @@ class WebController:
             element.send_keys(Keys.RETURN)
         except ElementNotInteractableException:
             logging.error("Element not interactable")
+        except Exception as e:
+            logging.error(f"Failed to enter a word: {e}")

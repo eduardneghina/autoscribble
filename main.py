@@ -9,10 +9,8 @@ def main():
     time.sleep(1)
     WebControllerObject.initiate_the_game()
     time.sleep(2)
-    while True:
-        #print(WebControllerObject.get_the_word())
-        WebControllerObject.enter_a_word()
-        time.sleep(1)
+    WebControllerObject.check_word_status()
+
 
 
 if __name__ == "__main__":

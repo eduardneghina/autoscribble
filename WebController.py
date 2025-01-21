@@ -53,7 +53,7 @@ class WebController:
 
         sys.stdout.reconfigure(encoding='utf-8')
 
-#########################################################################################################################
+########################################################################################################################
 
     def initiate_the_browser(self):
         """Initiate the browser with Brave or Chrome."""
@@ -154,3 +154,24 @@ class WebController:
             logging.error("Element not interactable")
         except Exception as e:
             logging.error(f"Failed to enter a word: {e}")
+
+    def check_word_status(self):
+        """Continuously check the word status and perform actions based on the word."""
+        while True:
+            try:
+                word = self.get_the_word()
+                if word == "WAITING":
+                    logging.info("The game is in waiting mode.")
+                    #
+                    pass
+                elif word == "DRAW THIS":
+                    logging.info("It's your turn to draw.")
+                    #
+                    pass
+                else:
+                    logging.info(f"The current word is: {word}")
+                    #
+                    pass
+            except NoSuchElementException:
+                logging.error("Failed to retrieve the word.")
+            time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency

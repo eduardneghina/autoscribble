@@ -135,7 +135,7 @@ class WebController:
         try:
             element = self.driver.find_element(By.ID, 'game-word')
             self.driver.execute_script("arguments[0].scrollIntoView();", element)
-            logging.info(f"The word is: {element.text}")
+            #logging.info(f"The word is: {element.text}") # too many lines in logs
             return element.text
         except ElementNotInteractableException:
             logging.error("Element not interactable")
@@ -162,8 +162,11 @@ class WebController:
                 word = self.get_the_word()
                 if word == "WAITING":
                     logging.info("The game is in waiting mode.")
-                    #
-                    pass
+                    # Wait until the word changes from 'WAITING' to something else
+                    while word == "WAITING":
+                        time.sleep(1)
+                        word = self.get_the_word()
+                    logging.info(f"The word has changed to: {word}")
                 elif word == "DRAW THIS":
                     logging.info("It's your turn to draw.")
                     #
@@ -175,3 +178,4 @@ class WebController:
             except NoSuchElementException:
                 logging.error("Failed to retrieve the word.")
             time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency
+

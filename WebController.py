@@ -7,6 +7,8 @@ import random
 import ast
 import tkinter as tk
 import logging
+
+from cffi.cffi_opcode import PRIM_INT
 from random_words import RandomWords
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -143,6 +145,8 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to get the word: {e}")
 
+
+
     def enter_a_word(self):
         """Enter a word in the game."""
         try:
@@ -155,27 +159,35 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to enter a word: {e}")
 
+
+
     def check_word_status(self):
         """Continuously check the word status and perform actions based on the word."""
+        current_word = None
         while True:
             try:
-                word = self.get_the_word()
-                if word == "WAITING":
-                    logging.info("The game is in waiting mode.")
-                    # Wait until the word changes from 'WAITING' to something else
-                    while word == "WAITING":
-                        time.sleep(1)
-                        word = self.get_the_word()
-                    logging.info(f"The word has changed to: {word}")
-                elif word == "DRAW THIS":
-                    logging.info("It's your turn to draw.")
-                    #
-                    pass
-                else:
-                    logging.info(f"The current word is: {word}")
-                    #
-                    pass
+                new_word = self.get_the_word()
+                if new_word != current_word:
+                    current_word = new_word
+                    if current_word == "WAITING":
+                        logging.info("The game is in waiting mode.")
+                        # Wait until the word changes from 'WAITING' to something else
+                        while current_word == "WAITING":
+                            time.sleep(1)
+                            current_word = self.get_the_word()
+                        #logging.info(f"The word has changed to: {current_word}")
+                    elif current_word.startswith("DRAW THIS"):
+                        logging.info("The game is in draw mode.")
+                        logging.info(f"You have to draw: {current_word.removeprefix('DRAW THIS')}")
+                        while current_word.startswith("DRAW THIS"):
+                            time.sleep(1)
+                            current_word = self.get_the_word()
+                        logging.info("The mode has changed to drawing.")
+                    elif current_word.startswith("GUESS THIS"):
+                        logging.info("The game is in guess mode.")
+                        word_to_guess_raw = current_word.removeprefix("GUESS THIS")
+                        print(word_to_guess_raw)
+                        # Perform actions for other words
             except NoSuchElementException:
                 logging.error("Failed to retrieve the word.")
             time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency
-

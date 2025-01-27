@@ -169,15 +169,15 @@ class WebController:
                 while current_word == "WAITING":
                     time.sleep(1)
                     current_word = self.get_the_word()
-                # logging.info(f"The word has changed to: {current_word}")
             elif current_word.startswith("DRAW THIS"):
                 logging.info("The game is now in draw mode.")
                 while current_word.startswith("DRAW THIS"):
                     time.sleep(1)
                     current_word = self.get_the_word()
             elif current_word.startswith("GUESS THIS"):
-                logging.info("The game is in guess mode.")
+                logging.info("The game is in guessing mode.")
                 word_to_guess_raw = current_word.removeprefix("GUESS THIS")
-                print(word_to_guess_raw)
-                # Perform actions for other words
+                word_to_guess = word_to_guess_raw.replace("\n", "")
+                print(word_to_guess)
+                # Perform actions for the word that needs to be guessed
             time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency

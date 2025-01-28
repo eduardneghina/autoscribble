@@ -37,7 +37,7 @@ class WebController:
             pass
 
         self.info_path_file = "C:\\Temp\\skribbl\\logs.txt"
-        with open(self.info_path_file, 'w') as f:
+        with open(self.info_path_file, 'a') as f:
             f.write("\n" + "=" * 50 + " New Session " + "=" * 50 + "\n")
 
         file_handler = logging.FileHandler(self.info_path_file, mode='a', encoding='utf-8')
@@ -79,6 +79,8 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to initiate the browser: {e}")
 
+
+
     def initiate_the_game(self):
         """Initiate the game by navigating to the provided link."""
         try:
@@ -98,6 +100,8 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to initiate the game: {e}")
 
+
+
     def get_input(self):
         """Get the game link from user input."""
         try:
@@ -105,6 +109,8 @@ class WebController:
             return link_inserted
         except Exception as e:
             logging.error(f"Failed to get input: {e}")
+
+
 
     def get_name(self):
         """Get the player name from user input."""
@@ -115,6 +121,8 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to get name: {e}")
 
+
+
     def insert_name(self):
         """Insert the player name into the game."""
         try:
@@ -122,6 +130,8 @@ class WebController:
             self.driver.find_element(By.CLASS_NAME, 'input-name').send_keys(str(name))
         except Exception as e:
             logging.error(f"Failed to insert name: {e}")
+
+
 
     def press_click_on_play(self):
         """Press the play button to start the game."""
@@ -131,6 +141,8 @@ class WebController:
             actions.move_to_element(element).click().perform()
         except Exception as e:
             logging.error(f"Failed to press click on play: {e}")
+
+
 
     def get_the_word(self):
         """Retrieve the current game word."""
@@ -159,6 +171,8 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to enter a word: {e}")
 
+
+
     def check_word_status(self):
         """Continuously check the word status and perform actions based on the word."""
         while True:
@@ -171,6 +185,7 @@ class WebController:
                     current_word = self.get_the_word()
             elif current_word.startswith("DRAW THIS"):
                 logging.info("The game is now in draw mode.")
+                # Wait until the word changes from 'DRAW THIS' to something else
                 while current_word.startswith("DRAW THIS"):
                     time.sleep(1)
                     current_word = self.get_the_word()

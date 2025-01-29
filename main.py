@@ -1,16 +1,17 @@
-import os
-import time
 from WebController import *
-from DataController import DataController
+from WordGuesser import *
+import time
+
+
 
 def main():
     WebControllerObject = WebController()
     WebControllerObject.initiate_the_browser()
     time.sleep(1)
     WebControllerObject.initiate_the_game()
-    time.sleep(2)
-    WebControllerObject.check_word_status()
-
+    time.sleep(1)
+    WordGuesserObject = WordGuesser()
+    WordGuesserObject.word_parser(WebControllerObject)
 
 
 if __name__ == "__main__":

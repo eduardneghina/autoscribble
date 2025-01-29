@@ -7,7 +7,6 @@ import random
 import ast
 import tkinter as tk
 import logging
-
 from cffi.cffi_opcode import PRIM_INT
 from random_words import RandomWords
 from selenium import webdriver
@@ -193,6 +192,6 @@ class WebController:
                 logging.info("The game is in guessing mode.")
                 word_to_guess_raw = current_word.removeprefix("GUESS THIS")
                 word_to_guess = word_to_guess_raw.replace("\n", "")
-                print(word_to_guess)
+                return word_to_guess
                 # Perform actions for the word that needs to be guessed
             time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency

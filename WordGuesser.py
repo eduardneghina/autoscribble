@@ -12,7 +12,9 @@ class WordGuesser:
             try:
                 # Get the word from the web controller
                 word_raw = str(word_from_webcontroller.check_word_status())
-                print(word_raw)
+                #only_chars_word = re.sub('\d+', '', s)
+                numbers = re.findall('\d+', word_raw.strip())
+                print(numbers)
                 time.sleep(1)
             except Exception as e:
                 logging.error(f"Failed to parse the word: {e}")

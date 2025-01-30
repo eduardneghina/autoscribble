@@ -13,6 +13,8 @@ def main():
     WordGuesserObject = WordGuesser()
     WordGuesserObject.word_parser(WebControllerObject)
 
+# TO DO - DRAW MODE - STORE THE WORD TO DRAW
+
 
 if __name__ == "__main__":
     main()

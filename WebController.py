@@ -184,6 +184,8 @@ class WebController:
                     current_word = self.get_the_word()
             elif current_word.startswith("DRAW THIS"):
                 logging.info("The game is now in draw mode.")
+                word_to_draw = current_word.removeprefix("DRAW THIS").strip()
+                logging.info(f"The word to draw is: {word_to_draw}")
                 # Wait until the word changes from 'DRAW THIS' to something else
                 while current_word.startswith("DRAW THIS"):
                     time.sleep(1)

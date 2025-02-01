@@ -16,5 +16,6 @@ class WordGuesser:
                 numbers = re.findall('\d+', word_raw.strip())
                 print(numbers)
                 time.sleep(1)
+                #tobetested if 1 time sleep is too much and makes bottlecneck
             except Exception as e:
                 logging.error(f"Failed to parse the word: {e}")

@@ -11,7 +11,7 @@ def main():
     WebControllerObject.initiate_the_game()
     time.sleep(1)
     WordGuesserObject = WordGuesser()
-    WordGuesserObject.word_parser(WebControllerObject)
+    WordGuesserObject.word_char_parser(WebControllerObject)
 
 
 if __name__ == "__main__":

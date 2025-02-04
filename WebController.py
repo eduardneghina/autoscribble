@@ -32,7 +32,7 @@ class WebController:
         os.makedirs(self.db_path_directory, exist_ok=True)
 
         self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
-        with open(self.data_path_file, 'w') as f:
+        with open(self.data_path_file, 'a') as f:
             pass
 
         self.info_path_file = "C:\\Temp\\skribbl\\logs.txt"
@@ -185,6 +185,7 @@ class WebController:
             elif current_word.startswith("DRAW THIS"):
                 logging.info("The game is now in draw mode.")
                 word_to_draw = current_word.removeprefix("DRAW THIS").strip()
+                self.write_data(word_to_draw)
                 logging.info(f"The word to draw is: {word_to_draw}")
                 # Wait until the word changes from 'DRAW THIS' to something else
                 while current_word.startswith("DRAW THIS"):
@@ -197,3 +198,21 @@ class WebController:
                 return word_to_guess
                 # Perform actions for the word that needs to be guessed
             time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency
+
+
+    def write_data(self, word_to_write_in_database):
+        """Write the data to a file."""
+        try:
+            # Check if the word contains no underscores and is not already in the file
+            if '_' not in word_to_write_in_database:
+                with open(self.data_path_file, 'r') as file:
+                    words = file.read().splitlines()
+                if word_to_write_in_database not in words:
+                    with open(self.data_path_file, 'a') as file:
+                        file.write(word_to_write_in_database + '\n')
+                        logging.info(f"New word added: {word_to_write_in_database}")
+                        time.sleep(3)
+                else:
+                    logging.info(f"Word already exists in database: {word_to_write_in_database}")
+        except Exception as e:
+            logging.error(f"Failed to write data: {e}")

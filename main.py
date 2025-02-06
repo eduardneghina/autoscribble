@@ -12,8 +12,11 @@ def main():
     time.sleep(1)
 
     WordGuesserObject = WordGuesser()
-    #WordGuesserObject.word_char_parser(WebControllerObject)
     WordGuesserObject.write_data(WordGuesserObject.word_char_parser(WebControllerObject))
+    print("ajung aici ?")
+
+
+
 
 
 if __name__ == "__main__":

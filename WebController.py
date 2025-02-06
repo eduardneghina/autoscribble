@@ -158,13 +158,15 @@ class WebController:
 
 
 
-    def enter_a_word(self):
-        """Enter a word in the game."""
+    def enter_a_word(self, words_list):
+        """Enter words from the given list one by one in the game."""
         try:
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             element = self.driver.find_element(By.XPATH, '//*[@id="game-chat"]/form/input')
-            element.send_keys(RandomWords().random_word())
-            element.send_keys(Keys.RETURN)
+            for word in words_list:
+                element.send_keys(word)
+                element.send_keys(Keys.RETURN)
+                time.sleep(1)  # Adjust the sleep time as needed between entering words
         except ElementNotInteractableException:
             logging.error("Element not interactable")
         except Exception as e:

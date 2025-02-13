@@ -18,16 +18,14 @@ class WordGuesser:
             logging.error(f"Failed to parse the word: {e}")
 
     def word_number_parser(self, word_from_webcontroller_object):
-        """Continuously check the word and return only the numbers of chars"""
-        while True:
-            try:
-                # Get the word from the web controller
-                word_raw = str(word_from_webcontroller_object.check_word_status())
-                only_numbers_word = re.sub('\D+', '', word_raw)
-                time.sleep(1)
-            except Exception as e:
-                logging.error(f"Failed to parse the word: {e}")
-
+        """Check the word and return only the numbers of chars"""
+        try:
+            # Get the word from the web controller
+            word_raw = str(word_from_webcontroller_object.check_word_status())
+            only_numbers_word = re.sub('\D+', '', word_raw)
+            return only_numbers_word
+        except Exception as e:
+            logging.error(f"Failed to parse the word: {e}")
 
     def write_data(self, word_to_write_in_database):
         """Write the data/words to a database file."""

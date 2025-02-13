@@ -15,13 +15,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
-from DataController import *
-
-########################################################################################################################
+from GameMaster import *
 
 class WebController:
     """Class to control web interactions using Selenium."""
@@ -54,8 +52,6 @@ class WebController:
 
         sys.stdout.reconfigure(encoding='utf-8')
 
-########################################################################################################################
-
     def initiate_the_browser(self):
         """Initiate the browser with Brave or Chrome."""
         try:
@@ -78,8 +74,6 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to initiate the browser: {e}")
 
-
-
     def initiate_the_game(self):
         """Initiate the game by navigating to the provided link."""
         try:
@@ -99,8 +93,6 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to initiate the game: {e}")
 
-
-
     def get_input(self):
         """Get the game link from user input."""
         try:
@@ -108,8 +100,6 @@ class WebController:
             return link_inserted
         except Exception as e:
             logging.error(f"Failed to get input: {e}")
-
-
 
     def get_name(self):
         """Get the player name from user input."""
@@ -120,8 +110,6 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to get name: {e}")
 
-
-
     def insert_name(self):
         """Insert the player name into the game."""
         try:
@@ -129,8 +117,6 @@ class WebController:
             self.driver.find_element(By.CLASS_NAME, 'input-name').send_keys(str(name))
         except Exception as e:
             logging.error(f"Failed to insert name: {e}")
-
-
 
     def press_click_on_play(self):
         """Press the play button to start the game."""
@@ -141,22 +127,17 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to press click on play: {e}")
 
-
-
     def get_the_word(self):
         """Retrieve the current game word."""
         try:
             element = self.driver.find_element(By.ID, 'game-word')
             self.driver.execute_script("arguments[0].scrollIntoView();", element)
-            #logging.info(f"The word is: {element.text}") # too many lines in logs
             return element.text
         except ElementNotInteractableException:
             logging.error("Element not interactable")
             return None
         except Exception as e:
             logging.error(f"Failed to get the word: {e}")
-
-
 
     def enter_a_word(self, words_list):
         """Enter words from the given list one by one in the game."""
@@ -172,40 +153,32 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to enter a word: {e}")
 
-
-
     def check_word_status(self):
-        """Continuously check the word status and perform actions based on the word."""
-        while True:
-            current_word = self.get_the_word()
-            if current_word == "WAITING":
-                logging.info("The game is in waiting mode.")
-                # Wait until the word changes from 'WAITING' to something else
-                while current_word == "WAITING":
-                    time.sleep(1)
-                    current_word = self.get_the_word()
-            elif current_word.startswith("DRAW THIS"):
-                logging.info("The game is now in draw mode.")
-                word_to_draw = current_word.removeprefix("DRAW THIS").strip()
-                self.write_data(word_to_draw)
-                logging.info(f"The word to draw is: {word_to_draw}")
-                # Wait until the word changes from 'DRAW THIS' to something else
-                while current_word.startswith("DRAW THIS"):
-                    time.sleep(1)
-                    current_word = self.get_the_word()
-            elif current_word.startswith("GUESS THIS"):
-                logging.info("The game is in guessing mode.")
-                word_to_guess_raw = current_word.removeprefix("GUESS THIS")
-                word_to_guess = word_to_guess_raw.replace("\n", "")
-                return word_to_guess
-                # Perform actions for the word that needs to be guessed
-            time.sleep(1)  # Adjust the sleep time as needed to control the checking frequency
-
+        """Check the word status and perform actions based on the word."""
+        current_word = self.get_the_word()
+        if current_word == "WAITING":
+            logging.info("The game is in waiting mode.")
+            while current_word == "WAITING":
+                time.sleep(1)
+                current_word = self.get_the_word()
+        elif current_word.startswith("DRAW THIS"):
+            logging.info("The game is now in draw mode.")
+            word_to_draw = current_word.removeprefix("DRAW THIS").strip()
+            self.write_data(word_to_draw)
+            logging.info(f"The word to draw is: {word_to_draw}")
+            while current_word.startswith("DRAW THIS"):
+                time.sleep(1)
+                current_word = self.get_the_word()
+        elif current_word.startswith("GUESS THIS"):
+            logging.info("The game is in guessing mode.")
+            word_to_guess_raw = current_word.removeprefix("GUESS THIS")
+            word_to_guess = word_to_guess_raw.replace("\n", "")
+            return word_to_guess
+        time.sleep(1)
 
     def write_data(self, word_to_write_in_database):
         """Write the data to a file."""
         try:
-            # Check if the word contains no underscores and is not already in the file
             if '_' not in word_to_write_in_database:
                 with open(self.data_path_file, 'r') as file:
                     words = file.read().splitlines()

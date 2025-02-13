@@ -19,7 +19,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
-from GameMaster import *
 
 class WebController:
     """Class to control web interactions using Selenium."""
@@ -148,6 +147,7 @@ class WebController:
                 element.send_keys(word)
                 element.send_keys(Keys.RETURN)
                 time.sleep(1)  # Adjust the sleep time as needed between entering words
+                self.driver.execute_script("window.scrollTo(0, 0);")
         except ElementNotInteractableException:
             logging.error("Element not interactable")
         except Exception as e:
@@ -175,6 +175,9 @@ class WebController:
             word_to_guess = word_to_guess_raw.replace("\n", "")
             return word_to_guess
         time.sleep(1)
+
+    def game_running(self):
+        pass
 
     def write_data(self, word_to_write_in_database):
         """Write the data to a file."""

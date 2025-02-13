@@ -6,14 +6,15 @@ class WordGuesser:
     def __init__(self):
         self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
 
-    def word_char_parser(self, word_from_webcontroller_object):
+    def get_only_the_word_parsed(self, word_from_webcontroller):
         """Parse the word and log if it has changed."""
         try:
             # Get the word from the web controller
-            word_raw = str(word_from_webcontroller_object.check_word_status())
-            only_chars_word = re.sub('\d+', '', word_raw)
-            self.write_data(only_chars_word)
-            self.find_matching_word(only_chars_word)
+            word_raw = str(word_from_webcontroller)
+            if word_raw is not None:
+                only_chars_word = re.sub('\d+', '', word_raw)
+                self.write_data(only_chars_word)
+                return only_chars_word
         except Exception as e:
             logging.error(f"Failed to parse the word: {e}")
 
@@ -53,14 +54,13 @@ class WordGuesser:
         except FileNotFoundError:
             print(f"File {self.data_path_file} not found.")
 
-    def find_matching_word(self, word_to_guess):
+    def find_matching_words(self, word_to_guess_raw):
         """Find the best matching word from the database."""
         words = self.read_all_words_from_database()
-        pattern = re.compile('^' + word_to_guess.replace('_', '.') + '$')
-
+        word_parsed = self.get_only_the_word_parsed(word_to_guess_raw)
+        pattern = re.compile('^' + word_parsed.replace('_', '.') + '$')
         # Initialize an empty list to store matches
         matches = []
-
         for word in words:
             if pattern.match(word):
                 # Append each match to the list

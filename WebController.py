@@ -176,9 +176,6 @@ class WebController:
             return word_to_guess
         time.sleep(1)
 
-    def game_running(self):
-        pass
-
     def write_data(self, word_to_write_in_database):
         """Write the data to a file."""
         try:

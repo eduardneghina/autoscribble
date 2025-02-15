@@ -24,6 +24,7 @@ class GameMaster:
             word = self.WordGuesserObject.get_only_the_word_parsed(self.WebControllerObject.check_word_status())
             words_to_try_list = self.WordGuesserObject.find_matching_words(word)
             print(words_to_try_list)
+            print(self.WebControllerObject.extract_chat())
             if 0 < len(words_to_try_list) < 7:
                 self.WebControllerObject.enter_a_word(words_to_try_list)
             else:

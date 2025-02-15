@@ -54,9 +54,9 @@ class WebController:
     def initiate_the_browser(self):
         """Initiate the browser with Brave or Chrome."""
         try:
-            BROWSER_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+            browser_path= r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
             options = Options()
-            options.binary_location = BROWSER_PATH
+            options.binary_location = browser_path
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
             self.driver.maximize_window()
@@ -191,3 +191,11 @@ class WebController:
                     logging.info(f"Word already exists in database: {word_to_write_in_database}")
         except Exception as e:
             logging.error(f"Failed to write data: {e}")
+
+
+    def extract_chat (self):
+        try:
+            chat = self.driver.find_element(By.ID, 'game-chat')
+            return chat.text
+        except Exception as e:
+            logging.error(f"Failed to extract chat: {e}")

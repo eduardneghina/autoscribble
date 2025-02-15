@@ -16,5 +16,6 @@ def main():
     GameMasterObject = GameMaster()
     GameMasterObject.game_runner()
 
+
 if __name__ == "__main__":
     main()

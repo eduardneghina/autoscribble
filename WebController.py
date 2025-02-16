@@ -25,6 +25,8 @@ class WebController:
 
     def __init__(self):
         """Initialize the WebController class."""
+        self.player_name = None
+
         self.db_path_directory = "C:\\Temp\\skribbl"
         os.makedirs(self.db_path_directory, exist_ok=True)
 
@@ -103,9 +105,9 @@ class WebController:
     def get_name(self):
         """Get the player name from user input."""
         try:
-            inserted_name = input("Enter a name: ")
-            logging.info(f"{inserted_name} name inserted")
-            return inserted_name
+            self.player_name = input("Enter a name: ")
+            logging.info(f"{self.player_name} name inserted")
+            return self.player_name
         except Exception as e:
             logging.error(f"Failed to get name: {e}")
 
@@ -138,7 +140,22 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to get the word: {e}")
 
-    def enter_a_word(self, words_list):
+    def enter_one_word(self, word):
+        """Enter a word in the game."""
+        try:
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            element = self.driver.find_element(By.XPATH, '//*[@id="game-chat"]/form/input')
+            element.send_keys(word)
+            element.send_keys(Keys.RETURN)
+            #time.sleep(1)  # Adjust the sleep time as needed between entering words
+            self.driver.execute_script("window.scrollTo(0, 0);")
+        except ElementNotInteractableException:
+            logging.error("Element not interactable")
+        except Exception as e:
+            logging.error(f"Failed to enter a word: {e}")
+
+
+    def enter_words_from_a_list(self, words_list):
         """Enter words from the given list one by one in the game."""
         try:
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")

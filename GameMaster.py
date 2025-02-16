@@ -23,12 +23,26 @@ class GameMaster:
         while True:
             word = self.WordGuesserObject.get_only_the_word_parsed(self.WebControllerObject.check_word_status())
             words_to_try_list = self.WordGuesserObject.find_matching_words(word)
-            print(words_to_try_list)
-            print(self.WebControllerObject.extract_chat())
-            if 0 < len(words_to_try_list) < 7:
-                self.WebControllerObject.enter_a_word(words_to_try_list)
+            #print(words_to_try_list)
+            if 0 < len(words_to_try_list) < 5:
+                while self.chat_checker() is not True:
+                    self.WebControllerObject.enter_one_word(words_to_try_list[0])
+                    logging.info(f"Word entered: {words_to_try_list[0]}")
+                    time.sleep(1)
+                else:
+                    logging.info("The word has been guessed.")
+                    logging.info("The word was : " + words_to_try_list[0])
+                    self.WebControllerObject.write_data(words_to_try_list[0])
+                    break
             else:
-                pass
-# de facut sa se opreasca cand vede ca am ghicit
+                logging.info("No words found in the database.")
+                break
+
 # ceva ai de ales mai bine din lista returnata de find_matching_words
 # compararea cu baza de date reala din game si nu cu cea din fisier
+
+    def chat_checker(self):
+       chat_text = self.WebControllerObject.extract_chat()
+       string_to_search = self.WebControllerObject.player_name + " guessed the word"
+       if string_to_search in chat_text:
+           return True

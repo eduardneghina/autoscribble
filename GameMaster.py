@@ -15,20 +15,33 @@ class GameMaster:
 
 ########################################################################################################################
 
-#need to handle the cases of the word like waiting and drawing
+    def check_if_the_word_was_guessed(self):
+       chat_text = self.WebControllerObject.extract_chat()
+       string_to_search = self.WebControllerObject.player_name + " guessed the word"
+       if string_to_search in chat_text:
+           return True
+
+    def database_population_runner(self):
+        self.WebControllerObject.initiate_the_browser()
+        time.sleep(1)
+        self.WebControllerObject.game_starter_no_link()
+        time.sleep(100)
+
+
 
     def game_runner(self):
+
+        # need to handle the cases of the word like waiting and drawing
         self.WebControllerObject.initiate_the_browser()
         time.sleep(1)
         self.WebControllerObject.initiate_the_game()
         time.sleep(1)
-
         while True:
             word = self.WordGuesserObject.get_only_the_word_parsed(self.WebControllerObject.check_word_status())
             words_to_try_list = self.WordGuesserObject.find_matching_words(word)
             print(words_to_try_list)
             if 0 < len(words_to_try_list) < 5:
-                while self.chat_checker() is not True:
+                while self.check_if_the_word_was_guessed() is not True:
                     self.WebControllerObject.enter_one_word(words_to_try_list[0])
                     logging.info(f"Word entered: {words_to_try_list[0]}")
                     time.sleep(1)
@@ -38,8 +51,3 @@ class GameMaster:
 
 
 
-    def chat_checker(self):
-       chat_text = self.WebControllerObject.extract_chat()
-       string_to_search = self.WebControllerObject.player_name + " guessed the word"
-       if string_to_search in chat_text:
-           return True

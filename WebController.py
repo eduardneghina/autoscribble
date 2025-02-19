@@ -59,6 +59,7 @@ class WebController:
             browser_path= r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
             options = Options()
             options.binary_location = browser_path
+            options.add_argument("--incognito")
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
             self.driver.maximize_window()
@@ -94,6 +95,19 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to initiate the game: {e}")
 
+
+    def game_starter_no_link(self):
+        self.driver.get("https://skribbl.io/")
+        self.driver.find_element(By.CLASS_NAME, 'fc-primary-button').click()
+        self.insert_name()
+        time.sleep(1)
+        self.select_language()
+        time.sleep(1)
+        self.press_click_on_play()
+        time.sleep(1)
+
+
+
     def get_input(self):
         """Get the game link from user input."""
         try:
@@ -111,10 +125,18 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to get name: {e}")
 
+    def select_language(self):
+        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select').click()
+        time.sleep(1)
+        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select/option[21]').click()
+        time.sleep(1)
+
+
     def insert_name(self):
         """Insert the player name into the game."""
         try:
-            name = self.get_name()
+            #name = self.get_name()
+            name = 'database'
             self.driver.find_element(By.CLASS_NAME, 'input-name').send_keys(str(name))
         except Exception as e:
             logging.error(f"Failed to insert name: {e}")
@@ -179,6 +201,8 @@ class WebController:
             logging.error("Element not interactable")
         except Exception as e:
             logging.error(f"Failed to enter a word: {e}")
+
+
 
     def check_word_status(self):
         """Check the word status and perform actions based on the word."""

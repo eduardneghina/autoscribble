@@ -89,8 +89,8 @@ class WebController:
                 self.insert_name()
                 time.sleep(1)
                 self.press_click_on_play()
+                time.sleep(1)
                 logging.info("The game is initiated")
-                return True
         except Exception as e:
             logging.error(f"Failed to initiate the game: {e}")
 
@@ -129,7 +129,7 @@ class WebController:
             logging.error(f"Failed to press click on play: {e}")
 
     def get_the_word(self):
-        """Retrieve the current game word."""
+        """Retrieve the current game word/mode"""
         try:
             element = self.driver.find_element(By.ID, 'game-word')
             self.driver.execute_script("arguments[0].scrollIntoView();", element)
@@ -139,6 +139,15 @@ class WebController:
             return None
         except Exception as e:
             logging.error(f"Failed to get the word: {e}")
+
+    def extract_chat (self):
+        try:
+            chat = self.driver.find_element(By.ID, 'game-chat')
+            return chat.text
+        except Exception as e:
+            logging.error(f"Failed to extract chat: {e}")
+
+
 
     def enter_one_word(self, word):
         """Enter a word in the game."""
@@ -153,6 +162,7 @@ class WebController:
             logging.error("Element not interactable")
         except Exception as e:
             logging.error(f"Failed to enter a word: {e}")
+
 
 
     def enter_words_from_a_list(self, words_list):
@@ -172,47 +182,18 @@ class WebController:
 
     def check_word_status(self):
         """Check the word status and perform actions based on the word."""
-        current_word = self.get_the_word()
-        if current_word == "WAITING":
+        current_status = self.get_the_word()
+        if current_status == "WAITING":
             logging.info("The game is in waiting mode.")
-            while current_word == "WAITING":
-                time.sleep(1)
-                current_word = self.get_the_word()
-        elif current_word.startswith("DRAW THIS"):
+            return "WAITING"
+        elif current_status.startswith("DRAW THIS"):
             logging.info("The game is now in draw mode.")
-            word_to_draw = current_word.removeprefix("DRAW THIS").strip()
-            self.write_data(word_to_draw)
+            word_to_draw = current_status.removeprefix("DRAW THIS").strip()
             logging.info(f"The word to draw is: {word_to_draw}")
-            while current_word.startswith("DRAW THIS"):
-                time.sleep(1)
-                current_word = self.get_the_word()
-        elif current_word.startswith("GUESS THIS"):
+            return "DRAW " + word_to_draw
+        elif current_status.startswith("GUESS THIS"):
             logging.info("The game is in guessing mode.")
-            word_to_guess_raw = current_word.removeprefix("GUESS THIS")
+            word_to_guess_raw = current_status.removeprefix("GUESS THIS")
             word_to_guess = word_to_guess_raw.replace("\n", "")
             return word_to_guess
-        time.sleep(1)
-
-    def write_data(self, word_to_write_in_database):
-        """Write the data to a file."""
-        try:
-            if '_' not in word_to_write_in_database:
-                with open(self.data_path_file, 'r') as file:
-                    words = file.read().splitlines()
-                if word_to_write_in_database not in words:
-                    with open(self.data_path_file, 'a') as file:
-                        file.write(word_to_write_in_database + '\n')
-                        logging.info(f"New word added: {word_to_write_in_database}")
-                        time.sleep(3)
-                else:
-                    logging.info(f"Word already exists in database: {word_to_write_in_database}")
-        except Exception as e:
-            logging.error(f"Failed to write data: {e}")
-
-
-    def extract_chat (self):
-        try:
-            chat = self.driver.find_element(By.ID, 'game-chat')
-            return chat.text
-        except Exception as e:
-            logging.error(f"Failed to extract chat: {e}")
+        return None

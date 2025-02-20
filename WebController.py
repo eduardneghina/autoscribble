@@ -7,7 +7,6 @@ import random
 import ast
 import tkinter as tk
 import logging
-from cffi.cffi_opcode import PRIM_INT
 from random_words import RandomWords
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -96,17 +95,6 @@ class WebController:
             logging.error(f"Failed to initiate the game: {e}")
 
 
-    def game_starter_no_link(self):
-        self.driver.get("https://skribbl.io/")
-        self.driver.find_element(By.CLASS_NAME, 'fc-primary-button').click()
-        self.insert_name()
-        time.sleep(1)
-        self.select_language()
-        time.sleep(1)
-        self.press_click_on_play()
-        time.sleep(1)
-
-
 
     def get_input(self):
         """Get the game link from user input."""
@@ -125,18 +113,12 @@ class WebController:
         except Exception as e:
             logging.error(f"Failed to get name: {e}")
 
-    def select_language(self):
-        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select').click()
-        time.sleep(1)
-        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select/option[21]').click()
-        time.sleep(1)
 
 
     def insert_name(self):
         """Insert the player name into the game."""
         try:
-            #name = self.get_name()
-            name = 'database'
+            name = self.get_name()
             self.driver.find_element(By.CLASS_NAME, 'input-name').send_keys(str(name))
         except Exception as e:
             logging.error(f"Failed to insert name: {e}")
@@ -221,3 +203,21 @@ class WebController:
             word_to_guess = word_to_guess_raw.replace("\n", "")
             return word_to_guess
         return None
+
+
+    def game_starter_no_link(self):
+        #temporary function for database population
+        self.driver.get("https://skribbl.io/?TPC5Qthp")
+        self.driver.find_element(By.CLASS_NAME, 'fc-primary-button').click()
+        self.insert_name()
+        time.sleep(1)
+        self.select_language()
+        time.sleep(1)
+        self.press_click_on_play()
+        time.sleep(1)
+
+    def select_language(self):
+        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select').click()
+        time.sleep(1)
+        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select/option[21]').click()
+        time.sleep(1)

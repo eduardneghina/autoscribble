@@ -19,6 +19,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 
+
+
 class WebController:
     """Class to control web interactions using Selenium."""
 
@@ -112,8 +114,6 @@ class WebController:
             return self.player_name
         except Exception as e:
             logging.error(f"Failed to get name: {e}")
-
-
 
     def insert_name(self):
         """Insert the player name into the game."""

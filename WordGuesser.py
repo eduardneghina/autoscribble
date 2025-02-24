@@ -2,6 +2,9 @@ import logging
 import time
 import re
 
+
+
+
 class WordGuesser:
     """Class for guessing the word mechanism."""
     def __init__(self):

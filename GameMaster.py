@@ -1,7 +1,8 @@
+import logging
 import time
-
 from WebController import *
 from WordGuesser import *
+
 
 
 class GameMaster:
@@ -37,24 +38,5 @@ class GameMaster:
 
 
     def game_runner(self):
-
-        # need to handle the cases of the word like waiting and drawing
-        self.WebControllerObject.initiate_the_browser()
-        time.sleep(1)
-        self.WebControllerObject.initiate_the_game()
-        time.sleep(1)
-        while True:
-            word = self.WordGuesserObject.get_only_the_word_parsed(self.WebControllerObject.check_word_status())
-            words_to_try_list = self.WordGuesserObject.find_matching_words(word)
-            print(words_to_try_list)
-            if 0 < len(words_to_try_list) < 5:
-                while self.check_if_the_word_was_guessed() is not True:
-                    self.WebControllerObject.enter_one_word(words_to_try_list[0])
-                    logging.info(f"Word entered: {words_to_try_list[0]}")
-                    time.sleep(1)
-                else:
-                    logging.info("The word has been guessed.")
-                    logging.info("The word was : " + words_to_try_list[0])
-
-
+        pass
 

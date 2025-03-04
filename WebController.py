@@ -5,6 +5,7 @@ import time
 import json
 import random
 import ast
+import os
 import tkinter as tk
 import logging
 from random_words import RandomWords
@@ -31,9 +32,13 @@ class WebController:
         self.db_path_directory = "C:\\Temp\\skribbl"
         os.makedirs(self.db_path_directory, exist_ok=True)
 
-        self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
-        with open(self.data_path_file, 'a') as f:
-            pass
+        #self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
+        #with open(self.data_path_file, 'a') as f:
+        #    pass
+
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.data_path_file = os.path.join(script_dir, 'data.txt')
+
 
         self.info_path_file = "C:\\Temp\\skribbl\\logs.txt"
         with open(self.info_path_file, 'a') as f:
@@ -201,7 +206,7 @@ class WebController:
             logging.info("The game is in guessing mode.")
             word_to_guess_raw = current_status.removeprefix("GUESS THIS")
             word_to_guess = word_to_guess_raw.replace("\n", "")
-            return word_to_guess
+            return "GUESS " + word_to_guess
         return None
 
 
@@ -211,13 +216,7 @@ class WebController:
         self.driver.find_element(By.CLASS_NAME, 'fc-primary-button').click()
         self.insert_name()
         time.sleep(1)
-        self.select_language()
+        self.select_language_ro()
         time.sleep(1)
         self.press_click_on_play()
-        time.sleep(1)
-
-    def select_language(self):
-        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select').click()
-        time.sleep(1)
-        self.driver.find_element(By.XPATH, '//*[@id="home"]/div[2]/div[2]/div[1]/select/option[21]').click()
         time.sleep(1)

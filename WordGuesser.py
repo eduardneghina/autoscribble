@@ -1,14 +1,15 @@
 import logging
 import time
 import re
-
+import os
 
 
 
 class WordGuesser:
     """Class for guessing the word mechanism."""
     def __init__(self):
-        self.data_path_file = "C:\\Temp\\skribbl\\data.txt"
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.data_path_file = os.path.join(script_dir, 'data.txt')
 
 ########################################################################################################################
 
@@ -54,11 +55,10 @@ class WordGuesser:
             logging.error(f"Failed to parse the word: {e}")
 
 
-
     def read_all_words_from_database(self):
         """Read all the words from the database file."""
         try:
-            with open(self.data_path_file, 'r') as f:
+            with open(self.data_path_file, 'r', encoding='utf-8') as f:
                 word_list = [word.strip().lower() for word in f.readlines()]
             return word_list
         except FileNotFoundError:
@@ -70,7 +70,7 @@ class WordGuesser:
         """Find the best matching word from the database."""
         words = self.read_all_words_from_database()
         word_parsed = self.get_only_the_word_parsed(word_to_guess_raw)
-        pattern = re.compile('^' + word_parsed.replace('_', '.') + '$')
+        pattern = re.compile('^' + re.escape(word_parsed).replace('_', '.') + '$', re.UNICODE)
         # Initialize an empty list to store matches
         matches = []
         for word in words:

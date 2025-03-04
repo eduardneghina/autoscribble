@@ -1,21 +1,13 @@
-import os
 import re
 import sys
 import time
-import json
-import random
-import ast
 import os
-import tkinter as tk
 import logging
-from random_words import RandomWords
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
@@ -36,7 +28,15 @@ class WebController:
         #with open(self.data_path_file, 'a') as f:
         #    pass
 
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Determine the directory of the executable or script
+        if getattr(sys, 'frozen', False):
+            # If the application is run as a bundle, the PyInstaller bootloader
+            # extends the sys module by a flag frozen=True and sets the app
+            # path into variable _MEIPASS'.
+            script_dir = sys._MEIPASS
+        else:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Construct the path to data.txt relative to the script directory
         self.data_path_file = os.path.join(script_dir, 'data.txt')
 
 

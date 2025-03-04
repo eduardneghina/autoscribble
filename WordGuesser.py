@@ -2,13 +2,21 @@ import logging
 import time
 import re
 import os
-
+import sys
 
 
 class WordGuesser:
     """Class for guessing the word mechanism."""
     def __init__(self):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Determine the directory of the executable or script
+        if getattr(sys, 'frozen', False):
+            # If the application is run as a bundle, the PyInstaller bootloader
+            # extends the sys module by a flag frozen=True and sets the app
+            # path into variable _MEIPASS'.
+            script_dir = sys._MEIPASS
+        else:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Construct the path to data.txt relative to the script directory
         self.data_path_file = os.path.join(script_dir, 'data.txt')
 
 ########################################################################################################################
